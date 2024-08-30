@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Detail</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #434343, #000000);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .detail-container {
+            background: #222;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        #customerDetail h2, #customerDetail p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="detail-container">
+        <h1>Customer Details</h1>
+        <div id="customerDetail"></div>
+		 <div id="customerBills"></div>
+    </div>
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const customerId = getQueryParam('id');
+        const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        const customer = customers.find(customer => customer.id == customerId);
+
+        if (customer) {
+            document.getElementById('customerDetail').innerHTML = `
+                <h2>Shop Name: ${customer.shopName}</h2>
+                <p>Phone: ${customer.phoneNumber}</p>
+                <p>Address: ${customer.shopAddress}</p>
+                <p>GST Number: ${customer.gstNumber}</p>
+				<button onclick="viewBills(${customer.id})">Bills with Date</button>
+				<button onclick="viewPaymentHistory(${customer.id})">Payment History</button>
+            `;
+			displayBills(customer.bills);
+        } else {
+            document.getElementById('customerDetail').innerHTML = '<p>No customer data found.</p>';
+        }
+		
+		function viewBills(customerId) {
+        window.location.href = `customer_bills.html?id=${customerId}`;
+		}
+
+		function viewPaymentHistory(customerId) {
+        window.location.href = `payment_history.html?id=${customerId}`;
+		}
+    </script>
+</body>
+</html>

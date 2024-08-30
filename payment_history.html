@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment History</title>
+</head>
+<body>
+    <h1 id="customerName">Customer Name</h1>
+    <div id="paymentHistoryContainer"></div>
+    <script>
+        const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        const params = new URLSearchParams(window.location.search);
+        const customerId = params.get('id');
+
+        const customer = customers.find(cust => cust.id == customerId);
+
+        if (customer) {
+            document.getElementById('customerName').innerText = customer.shopName;
+            // Load and display payment history for the customer
+        } else {
+            document.body.innerHTML = '<p>Customer not found.</p>';
+        }
+    </script>
+</body>
+</html>

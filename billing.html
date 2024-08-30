@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.S.T Billing Page</title>
+     <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #FFE6E6; /* Light Pink */
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #7469B6; /* Lavender Blue */
+        }
+        h6 {
+            color: #AD88C6; /* Mauve */
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #E1AFD1; /* Pink Lavender */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #7469B6; /* Lavender Blue */
+            padding: 3px;
+        }
+        th {
+            background-color: #AD88C6; /* Mauve */
+        }
+        input[type="text"], input[type="number"] {
+            width: 91%;
+            padding: 6px;
+            border: 1px solid #7469B6; /* Lavender Blue */
+            border-radius: 4px;
+        }
+        #print-button {
+            margin-top: 20px;
+            cursor: pointer;
+            background-color: #7469B6; /* Lavender Blue */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+        #contact-gst-info, #date-time {
+            font-family: 'Times New Roman', Times, serif;
+        }
+        #contact-gst-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top:10px;
+            margin-bottom: 20px;
+            margin-left:5%;
+            width:90%;
+        }
+        #contact-numbers{
+            margin-left:3px;
+            margin-right:3px;
+        }
+        #gst-number{
+            margin-left:3px;
+            margin-right:3px;
+        }
+        #current-date {
+            float: left;
+            margin-left:40px;
+        }
+        #current-time {
+            float: right;
+            margin-right:40px;
+        }
+        #customer-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top:10px;
+            margin-bottom: 20px;
+            margin-left:5%;
+            width:90%;
+        }
+        #consumer-name{
+            margin-left:3px;
+            margin-right:3px;
+        }
+        #consumer-address{
+            margin-left:3px;
+            margin-right:3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>A.S TRADERS</h1>
+    <h6>A PLACE FOR QUALITY PRODUCTS</h6>
+    <div id="contact-gst-info">
+        <span id="contact-numbers">Contact: +919443179474, +917094065043</span>
+        <span id="gst-number">GST Number: XXXXXXXXXX</span>
+    </div>
+    <div id="date-time">
+        <span id="current-date"></span>
+        <span id="current-time"></span>
+    </div>
+    <br>
+    <div id="customer-details">
+        <label for="consumer-name">Consumer Name:</label>
+        <input type="text" id="consumer-name" name="consumer-name">
+        <label for="consumer-address">Consumer Address:</label>
+        <input type="text" id="consumer-address" name="consumer-address">
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Product Name</th>
+                <th>Box</th>
+                <th>Pcs</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <tr>
+                <td>1</td>
+                <td><input type="text" name="product-name-1"></td>
+                <td><input type="number" name="box-1"></td>
+                <td><input type="number" name="pcs-1"></td>
+                <td><input type="number" name="price-1" oninput="calculateTotal(1)" onkeydown="handleEnter(event)"></td>
+                <td><input type="number" name="total-1" readonly></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="2">Total Boxes: <span id="total-boxes">0</span></th>
+                <th colspan="3">Grand Total:</th>
+                <td><input type="number" id="grand-total" readonly></td>
+            </tr>
+        </tfoot>
+    </table>
+    <button id="print-button" onclick="saveAndPrint()">Save and Print</button>
+
+    <script>
+        let rowCount = 1;
+        let grandTotal = 0;
+		let stockList = JSON.parse(localStorage.getItem('stockList')) || [];
+
+        function calculateTotal(row) {
+            const price = parseFloat(document.getElementsByName(`price-${row}`)[0].value) || 0;
+            const pcs = parseFloat(document.getElementsByName(`pcs-${row}`)[0].value) || 0;
+            const total = price * pcs;
+            document.getElementsByName(`total-${row}`)[0].value = total.toFixed(2);
+            updateGrandTotal();
+        }
+
+        function updateGrandTotal() {
+            grandTotal = 0;
+            const totalInputs = document.querySelectorAll('input[name^="total-"]');
+            totalInputs.forEach(input => {
+                grandTotal += parseFloat(input.value) || 0;
+            });
+            document.getElementById('grand-total').value = grandTotal.toFixed(2);
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                addRow();
+            }
+        }
+
+        function addRow() {
+            rowCount++;
+            const tableBody = document.getElementById('table-body');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${rowCount}</td>
+                <td><input type="text" name="product-name-${rowCount}" oninput="showAutocomplete(this, ${rowCount})"></td>
+                <td><input type="number" name="box-${rowCount}"></td>
+                <td><input type="number" name="pcs-${rowCount}" oninput="calculateTotal(${rowCount})"></td>
+                <td><input type="number" name="price-${rowCount}" oninput="calculateTotal(${rowCount})" onkeydown="handleEnter(event)"></td>
+                <td><input type="number" name="total-${rowCount}" readonly></td>
+            `;
+            tableBody.appendChild(newRow);
+            const nextCell = document.getElementsByName(`product-name-${rowCount}`)[0];
+            if (nextCell) {
+                nextCell.focus();
+            }
+        }
+
+        function handleArrowKeys(event) {
+            const activeElement = document.activeElement;
+            const cellIndex = activeElement.parentElement.cellIndex;
+            const rowIndex = activeElement.parentElement.parentElement.rowIndex;
+            if (event.key === 'ArrowRight') {
+                const nextCell = activeElement.parentElement.nextElementSibling;
+                if (nextCell) {
+                    nextCell.querySelector('input').focus();
+                }
+            } else if (event.key === 'ArrowLeft') {
+                const prevCell = activeElement.parentElement.previousElementSibling;
+                if (prevCell) {
+                    prevCell.querySelector('input').focus();
+                }
+            } else if (event.key === 'ArrowDown') {
+                const nextRow = activeElement.parentElement.parentElement.nextElementSibling;
+                if (nextRow) {
+                    const targetCell = nextRow.cells[cellIndex];
+                    targetCell.querySelector('input').focus();
+                }
+            } else if (event.key === 'ArrowUp') {
+                const prevRow = activeElement.parentElement.parentElement.previousElementSibling;
+                if (prevRow) {
+                    const targetCell = prevRow.cells[cellIndex];
+                    targetCell.querySelector('input').focus();
+                }
+            }
+        }
+			  function showAutocomplete(input, row) {
+            const value = input.value.toLowerCase();
+            const suggestions = stockList.filter(stock => stock.productName.toLowerCase().includes(value));
+            let dropdown = document.getElementById(`autocomplete-${row}`);
+            if (!dropdown) {
+                dropdown = document.createElement('div');
+                dropdown.id = `autocomplete-${row}`;
+                dropdown.style.position = 'absolute';
+                dropdown.style.border = '1px solid #ccc';
+                dropdown.style.backgroundColor = '#fff';
+                dropdown.style.zIndex = '1000';
+                input.parentElement.appendChild(dropdown);
+            }
+            dropdown.innerHTML = '';
+            suggestions.forEach(suggestion => {
+                const option = document.createElement('div');
+                option.textContent = suggestion.productName;
+                option.style.padding = '4px';
+                option.style.cursor = 'pointer';
+                option.addEventListener('click', () => {
+                    input.value = suggestion.productName;
+                    dropdown.innerHTML = '';
+                });
+                dropdown.appendChild(option);
+            });
+        }
+
+       function saveAndPrint() {
+            const customerName = document.getElementById('consumer-name').value;
+            const customerAddress = document.getElementById('consumer-address').value;
+            const billItems = [];
+            const rows = document.querySelectorAll('#table-body tr');
+            rows.forEach((row, index) => {
+                const productName = row.querySelector(`input[name="product-name-${index + 1}"]`).value;
+                const pcs = parseInt(row.querySelector(`input[name="pcs-${index + 1}"]`).value) || 0;
+                const price = parseFloat(row.querySelector(`input[name="price-${index + 1}"]`).value) || 0;
+                const total = pcs * price;
+                billItems.push({ productName, pcs, price, total });
+				 window.print();
+
+                // Update stock quantity
+                updateStockQuantity(productName, pcs);
+            });
+
+            // Save bill logic
+            const bills = JSON.parse(localStorage.getItem('bills')) || [];
+            const newBill = {
+                customerName,
+                customerAddress,
+                billItems,
+                grandTotal,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString()
+            };
+            bills.push(newBill);
+            localStorage.setItem('bills', JSON.stringify(bills));
+
+            window.print();
+        }
+
+        window.onload = function() {
+            updateTime();
+			calculateTotalBoxes();
+        };
+		 function updateTime() {
+            const currentDate = new Date();
+            const formattedDate = currentDate.toLocaleDateString();
+            const formattedTime = currentDate.toLocaleTimeString();
+            document.getElementById('current-date').textContent = `Date: ${formattedDate}`;
+            document.getElementById('current-time').textContent = `Time: ${formattedTime}`;
+        }
+        setInterval(updateTime, 1000);
+        document.addEventListener('keydown', handleArrowKeys);
+		
+		function calculateTotalBoxes() {
+    let totalBoxes = 0;
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const boxInput = row.querySelector('input[name^="box-"]');
+        const boxCount = parseInt(boxInput.value) || 0;
+        totalBoxes += boxCount;
+    });
+    document.getElementById('total-boxes').textContent = totalBoxes;
+}
+
+// Call calculateTotalBoxes when the page loads and whenever a box value changes
+window.onload = function() {
+    calculateTotalBoxes();
+};
+
+// Update the total count of boxes when a box value changes
+document.querySelectorAll('input[name^="box-"]').forEach(input => {
+    input.addEventListener('input', calculateTotalBoxes);
+});
+		
+    </script>
+</body>
+</html>

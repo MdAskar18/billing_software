@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Details</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #434343, #000000);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .search-container {
+            margin: 20px 0;
+        }
+        .search-input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            width: 300px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 250px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+        .card:hover {
+            background: #333;
+        }
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .card p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e76f51;
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .delete-button:hover {
+            background: #f4a261;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by name or address">
+    </div>
+    <div class="container" id="sellerContainer"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sellerContainer = document.getElementById('sellerContainer');
+            const searchInput = document.getElementById('searchInput');
+            let sellers = JSON.parse(localStorage.getItem('sellers')) || [];
+
+            function createCard(seller) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h2>${seller.companyName}</h2>
+                    <p><strong>Address:</strong> ${seller.address}</p>
+                    <p><strong>Contact:</strong> ${seller.contactNumber}</p>
+                    <p><strong>Account No:</strong> ${seller.accountNumber}</p>
+                    <p><strong>GST No:</strong> ${seller.gstNumber}</p>
+                    <button class="delete-button" onclick="confirmDelete(${seller.id}, event)">Delete</button>
+                `;
+                card.addEventListener('click', function(event) {
+                    // Prevent the delete button click from triggering the card click event
+                    if (event.target.className !== 'delete-button') {
+                        window.location.href = `seperate seller details.html?id=${seller.id}`;
+                    }
+                });
+                sellerContainer.appendChild(card);
+            }
+
+            window.confirmDelete = function(id, event) {
+                event.stopPropagation(); // Prevent the card click event from triggering
+                if (confirm("Are you sure you want to delete this seller?")) {
+                    deleteSeller(id);
+                }
+            }
+
+            function deleteSeller(id) {
+                sellers = sellers.filter(seller => seller.id !== id);
+                localStorage.setItem('sellers', JSON.stringify(sellers));
+                renderSellers(sellers);
+                alert("Deletion successful");
+            }
+
+            function renderSellers(sellersToRender) {
+                sellerContainer.innerHTML = '';
+                sellersToRender.forEach(seller => createCard(seller));
+            }
+
+            searchInput.addEventListener('input', function() {
+                const query = searchInput.value.toLowerCase();
+                const filteredSellers = sellers.filter(seller => 
+                    seller.companyName.toLowerCase().includes(query) || 
+                    seller.address.toLowerCase().includes(query)
+                );
+                renderSellers(filteredSellers);
+            });
+
+            renderSellers(sellers);
+        });
+    </script>
+</body>
+</html>

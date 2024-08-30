@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Full Details</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #434343, #000000);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .details {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 300px;
+        }
+        .details h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .details p {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="details" id="sellerDetails"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const sellerId = parseInt(params.get('id'), 10);
+            const sellers = JSON.parse(localStorage.getItem('sellers')) || [];
+            const seller = sellers.find(seller => seller.id === sellerId);
+
+            if (seller) {
+                const detailsContainer = document.getElementById('sellerDetails');
+                detailsContainer.innerHTML = `
+                    <h2>${seller.companyName}</h2>
+                    <p><strong>Address:</strong> ${seller.address}</p>
+                    <p><strong>Contact:</strong> ${seller.contactNumber}</p>
+                    <p><strong>Account No:</strong> ${seller.accountNumber}</p>
+                    <p><strong>GST No:</strong> ${seller.gstNumber}</p>
+                `;
+            } else {
+                document.body.innerHTML = '<h2>Seller not found</h2>';
+            }
+        });
+    </script>
+</body>
+</html>

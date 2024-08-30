@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Bills</title>
+    <style>
+        .bill {
+            border: 1px solid #000;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .bill-details {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer Bills</h1>
+    <div id="customerName"></div>
+    <div id="billsContainer"></div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const customerId = params.get('id');
+
+        const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        const customer = customers.find(cust => cust.id == customerId);
+
+        if (customer) {
+            document.getElementById('customerName').textContent = customer.shopName;
+            const billsContainer = document.getElementById('billsContainer');
+            customer.bills.forEach((bill, index) => {
+                const billDiv = document.createElement('div');
+                billDiv.className = 'bill';
+                billDiv.innerHTML = `
+                    <h2>Bill Date: ${bill.date}</h2>
+                    <p>Total Amount: ${bill.total}</p>
+                    <button onclick="viewBill(${index})">View Bill</button>
+                    <div class="bill-details" id="bill-details-${index}">
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Product Name</th>
+                                    <th>Box</th>
+                                    <th>Pcs</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${bill.items.map((item, i) => `
+                                    <tr>
+                                        <td>${i + 1}</td>
+                                        <td>${item.name}</td>
+                                        <td>${item.box}</td>
+                                        <td>${item.pcs}</td>
+                                        <td>${item.price}</td>
+                                        <td>${item.total}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5">Grand Total</td>
+                                    <td>${bill.total}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <button onclick="deleteBill(${index})">Delete Bill</button>
+                    <button onclick="downloadBill(${index}, 'pdf')">Download as PDF</button>
+                    <button onclick="downloadBill(${index}, 'excel')">Download as Excel</button>
+                `;
+                billsContainer.appendChild(billDiv);
+            });
+        }
+
+        function viewBill(billIndex) {
+            const billDetails = document.getElementById(`bill-details-${billIndex}`);
+            billDetails.style.display = billDetails.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function deleteBill(billIndex) {
+            customer.bills.splice(billIndex, 1);
+            localStorage.setItem('customers', JSON.stringify(customers));
+            location.reload();
+        }
+
+        function downloadBill(billIndex, format) {
+            const bill = customer.bills[billIndex];
+            if (format === 'pdf') {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.text(`Bill Date: ${bill.date}`, 10, 10);
+                doc.autoTable({
+                    head: [['S.No', 'Product Name', 'Box', 'Pcs', 'Price', 'Total']],
+                    body: bill.items.map((item, i) => [i + 1, item.name, item.box, item.pcs, item.price, item.total]),
+                });
+                doc.text(`Grand Total: ${bill.total}`, 10, doc.autoTable.previous.finalY + 10);
+                doc.save(`Bill_${bill.date}.pdf`);
+            } else if (format === 'excel') {
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.json_to_sheet(bill.items.map((item, i) => ({
+                    'S.No': i + 1,
+                    'Product Name': item.name,
+                    'Box': item.box,
+                    'Pcs': item.pcs,
+                    'Price': item.price,
+                    'Total': item.total
+                })));
+                XLSX.utils.book_append_sheet(wb, ws, 'Bill');
+                XLSX.writeFile(wb, `Bill_${bill.date}.xlsx`);
+            }
+        }
+    </script>
+</body>
+</html>

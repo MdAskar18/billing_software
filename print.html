@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Bill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h6 {
+            text-align: center;
+        }
+        #contact-gst-info, #date-time, #customer-details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        tfoot td {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="printContainer"></div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const customerId = params.get('id');
+        const billIndex = params.get('billIndex');
+
+        const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        const customer = customers.find(cust => cust.id == customerId);
+        const bill = customer.bills[billIndex];
+
+        if (customer && bill) {
+            const printContainer = document.getElementById('printContainer');
+            const totalBoxCount = bill.items.reduce((total, item) => total + parseInt(item.box), 0);
+            const billHtml = `
+                <h1>A.S TRADERS</h1>
+                <h6>A PLACE FOR QUALITY PRODUCTS</h6>
+                <div id="contact-gst-info">
+                    <span id="contact-numbers">Contact: +919443179474, +917094065043</span>
+                    <span id="gst-number">GST Number: XXXXXXXXXX</span>
+                </div>
+                <div id="date-time">
+                    <span>Date: ${bill.date}</span>
+                </div>
+                <div id="customer-details">
+                    <span>Consumer Name: ${customer.shopName}</span>
+                    <br>
+                    <span>Consumer Address: ${customer.shopAddress}</span>
+                    <br>
+                    <span>Total Boxes: ${totalBoxCount}</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Product Name</th>
+                            <th>Box</th>
+                            <th>Pcs</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bill.items.map((item, i) => `
+                            <tr>
+                                <td>${i + 1}</td>
+                                <td>${item.name}</td>
+                                <td>${item.box}</td>
+                                <td>${item.pcs}</td>
+                                <td>${item.price}</td>
+                                <td>${item.total}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5">Grand Total</td>
+                            <td>${bill.total}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            `;
+            printContainer.innerHTML = billHtml;
+            window.print();
+        }
+    </script>
+</body>
+</html>
