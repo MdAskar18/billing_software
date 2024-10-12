@@ -4,115 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Stock</title>
-	<style>
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to right, #434343, #000000);
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
+    <style>
+        /* Reset some default styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-.container {
-    background: #222;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    max-width: 400px;
-    width: 100%;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-h1 {
-    margin-bottom: 20px;
-    font-size: 24px;
-}
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
 
-.form-group {
-    margin-bottom: 20px;
-}
+        h1 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
 
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 18px;
-}
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
 
-input[type="text"],
-input[type="number"], 
-select {
-    width: calc(100% - 20px);
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    background: #444;
-    color: #fff;
-    text-align: center; /* Center the text */
-}
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 500;
+        }
 
-.input-group {
-    display: flex;
-    align-items: center;
-}
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            background: #34495e;
+            color: #ecf0f1;
+            transition: background 0.3s, transform 0.2s;
+        }
 
-.input-group button {
-    background: #555;
-    border: none;
-    color: #fff;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    margin: 0 5px;
-}
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            background: #3d566e;
+            outline: none;
+            transform: translateY(-2px);
+        }
 
-input[readonly] {
-    text-align: center;
-    background: #444;
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    width: 50px;
-}
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+        }
 
-button[type="submit"] {
-    background: #f4a261;
-    border: none;
-    color: #fff;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 18px;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
+        .input-group button {
+            background: #e67e22;
+            border: none;
+            color: #fff;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 6px;
+            transition: background 0.3s, transform 0.2s;
+        }
 
-button[type="submit"]:hover {
-    background: #e76f51;
-}
-.link-button {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background: #f4a261;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
+        .input-group button:hover {
+            background: #cf711f;
+            transform: translateY(-2px);
+        }
 
-.link-button:hover {
-    background: #e76f51;
-}
+       
 
+        button[type="submit"] {
+            background: #27ae60;
+            border: none;
+            color: #fff;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 6px;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 10px;
+        }
 
-	</style> 
+        button[type="submit"]:hover {
+            background: #219150;
+            transform: translateY(-2px);
+        }
+
+        .link-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #2980b9;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .link-button:hover {
+            background: #1f6fa5;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            button,
+            .link-button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-     <div class="container">
+    <div class="container">
         <h1>Add New Stock</h1>
         <form id="stockForm">
             <div class="form-group">
@@ -126,86 +162,97 @@ button[type="submit"]:hover {
             <div class="form-group">
                 <label for="size">Size:</label>
                 <select id="size">
-					<option value="0"> 0 </option>
-					<option value="16"> 16 </option>
-					<option value="16/18"> 16/18 </option>
-					<option value="20/24"> 20/24 </option>
-					<option value="22/26"> 22/26 </option>
-					<option value="26/30"> 26/30 </option>
-					<option value="20/30"> 20/30 </option>
-					<option value="32/34"> 32/34 </option>
-					<option value="36/38"> 36/38 </option>
-					<option value="40/42"> 40/42 </option>
-					<option value="SML"> S M L </option>
-                    <option value="S"> S </option>
-                    <option value="M"> M </option>
-                    <option value="L"> L </option>
-                    <option value="XL"> XL </option>
-                    <option value="XXL"> XXL </option>
-					<option value="XXL"> XXXL </option>
-					<option value="XXL"> XXXXL </option>
+                    <option value="0">0</option>
+                    <option value="16">16</option>
+                    <option value="16/18">16/18</option>
+                    <option value="20/24">20/24</option>
+                    <option value="22/26">22/26</option>
+                    <option value="26/30">26/30</option>
+                    <option value="20/30">20/30</option>
+                    <option value="32/34">32/34</option>
+                    <option value="36/38">36/38</option>
+                    <option value="40/42">40/42</option>
+                    <option value="SML">S M L</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                    <option value="XXL">XXL</option>
+                    <option value="XXXL">XXXL</option>
+                    <option value="XXXXL">XXXXL</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="quantity">Quantity:</label>
                 <div class="input-group">
-                    <button type="button" onclick="changeQuantity(-1)">-</button>
+                    <button type="button" onclick="changeQuantity(-1)">−</button>
                     <input type="number" id="quantity" value="1">
                     <button type="button" onclick="changeQuantity(1)">+</button>
                 </div>
             </div>
             <button type="submit">Add Stock</button>
-			
         </form>
-		 <a href="stock-list.html" class="link-button">View Stock List</a>
-		  <a href="javascript:history.back()" class="link-button">Back</a> <!-- Back button added here -->
+        <a href="stock-list.html" class="link-button">View Stock List</a>
+        <a href="javascript:history.back()" class="link-button">Back</a>
     </div>
     <script>
-		function changeQuantity(amount) {
-    let quantityInput = document.getElementById('quantity');
-    let currentQuantity = parseInt(quantityInput.value);
-    let newQuantity = currentQuantity + amount;
-    if (newQuantity > 0) {
-        quantityInput.value = newQuantity;
-    }
-}
+        function changeQuantity(amount) {
+            let quantityInput = document.getElementById('quantity');
+            let currentQuantity = parseInt(quantityInput.value);
+            let newQuantity = currentQuantity + amount;
+            if (newQuantity > 0) {
+                quantityInput.value = newQuantity;
+            }
+        }
 
-document.getElementById('stockForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Get form values
-    const productName = document.getElementById('productName').value;
-    const price = document.getElementById('price').value;
-    const size = document.getElementById('size').value;
-    const quantity = parseInt(document.getElementById('quantity').value);
-    
-    // Get the current stock list from local storage
-    let stockList = JSON.parse(localStorage.getItem('stockList')) || [];
-    
-    // Check if the item already exists
-    let existingItem = stockList.find(stock => stock.productName === productName && stock.price === price && stock.size === size);
-    
-    if (existingItem) {
-        // If the item exists, update its quantity
-        existingItem.quantity += quantity;
-    } else {
-        // If the item does not exist, add it to the stock list
-        const stockData = {
-            productName: productName,
-            price: price,
-            size: size,
-            quantity: quantity
-        };
-        stockList.push(stockData);
-    }
-    
-    // Save the updated stock list to local storage
-    localStorage.setItem('stockList', JSON.stringify(stockList));
-    
-    // Refresh the page
-    location.reload();
-});
+        document.getElementById('stockForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const productName = document.getElementById('productName').value.trim();
+            const price = parseFloat(document.getElementById('price').value);
+            const size = document.getElementById('size').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            
+            // Validate inputs
+            if (productName === '' || isNaN(price) || size === '' || quantity < 1) {
+                alert('Please fill in all required fields correctly.');
+                return;
+            }
 
-</script>
+            // Get the current stock list from local storage
+            let stockList = JSON.parse(localStorage.getItem('stockList')) || [];
+            
+            // Check if the item already exists
+            let existingItem = stockList.find(stock => 
+                stock.productName.toLowerCase() === productName.toLowerCase() &&
+                stock.price === price &&
+                stock.size === size
+            );
+            
+            if (existingItem) {
+                // If the item exists, update its quantity
+                existingItem.quantity += quantity;
+            } else {
+                // If the item does not exist, add it to the stock list
+                const stockData = {
+                    id: Date.now(),
+                    productName: productName,
+                    price: price,
+                    size: size,
+                    quantity: quantity
+                };
+                stockList.push(stockData);
+            }
+            
+            // Save the updated stock list to local storage
+            localStorage.setItem('stockList', JSON.stringify(stockList));
+            
+            // Notify the user and reset the form
+            alert('Stock added successfully!');
+            document.getElementById('stockForm').reset();
+            document.getElementById('quantity').value = 1;
+        });
+    </script>
 </body>
 </html>

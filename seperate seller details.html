@@ -3,58 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Full Details</title>
+    <title>Seller Detail</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to right, #434343, #000000);
+            font-family: 'Georgia', serif;
+            background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
             color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            text-align: center;
         }
-        .details {
-            background: #222;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            width: 300px;
+        .detail-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            max-width: 500px;
+            width: 100%;
         }
-        .details h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        h1 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            letter-spacing: 2px;
+            color: #ffd700;
         }
-        .details p {
-            margin: 10px 0;
+        h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #f8c471;
+        }
+        p {
+            margin-bottom: 15px;
             font-size: 18px;
+        }
+        .buttons-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+        }
+        button {
+            background-color: #ffd700;
+            color: #000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #e0b800;
         }
     </style>
 </head>
 <body>
-    <div class="details" id="sellerDetails"></div>
+    <div class="detail-container">
+        <h1>Seller Details</h1>
+        <div id="sellerDetail"></div>
+        <div class="buttons-container">
+            <button onclick="viewProducts()">View Products</button>
+            <button onclick="viewTransactionHistory()">Transaction History</button>
+        </div>
+    </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const params = new URLSearchParams(window.location.search);
-            const sellerId = parseInt(params.get('id'), 10);
-            const sellers = JSON.parse(localStorage.getItem('sellers')) || [];
-            const seller = sellers.find(seller => seller.id === sellerId);
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
 
-            if (seller) {
-                const detailsContainer = document.getElementById('sellerDetails');
-                detailsContainer.innerHTML = `
-                    <h2>${seller.companyName}</h2>
-                    <p><strong>Address:</strong> ${seller.address}</p>
-                    <p><strong>Contact:</strong> ${seller.contactNumber}</p>
-                    <p><strong>Account No:</strong> ${seller.accountNumber}</p>
-                    <p><strong>GST No:</strong> ${seller.gstNumber}</p>
-                `;
-            } else {
-                document.body.innerHTML = '<h2>Seller not found</h2>';
-            }
-        });
+        const sellerId = getQueryParam('id');
+        const sellers = JSON.parse(localStorage.getItem('sellers')) || [];
+        const seller = sellers.find(seller => seller.id == sellerId);
+
+        if (seller) {
+            document.getElementById('sellerDetail').innerHTML = `
+                <h2>Company Name: ${seller.companyName}</h2>
+                <p>Address: ${seller.address}</p>
+                <p>Contact: ${seller.contactNumber}</p>
+                <p>Account No: ${seller.accountNumber}</p>
+                <p>GST No: ${seller.gstNumber}</p>
+            `;
+        } else {
+            document.getElementById('sellerDetail').innerHTML = '<p>No seller data found.</p>';
+        }
+
+        function viewProducts() {
+            window.location.href = `seller_products.html?id=${sellerId}`;
+        }
+
+        function viewTransactionHistory() {
+            window.location.href = `transaction_history.html?id=${sellerId}`;
+        }
     </script>
 </body>
 </html>
