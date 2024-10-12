@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A.S.T Billing Page</title>
-     <style>
-        body {
+    <style>
+        body
+		{
             font-family: 'Georgia', serif;
             background-color: #FFE6E6; /* Light Pink */
             color: #333;
@@ -13,35 +14,43 @@
             margin: 0;
             padding: 0;
         }
-        h1 {
+        h1 
+		{
             font-size: 2.5rem;
             margin-bottom: 20px;
             color: #7469B6; /* Lavender Blue */
         }
-        h6 {
+        h6 
+		{
             color: #AD88C6; /* Mauve */
         }
-        table {
+        table
+		{
             width: 90%;
             margin: 20px auto;
             border-collapse: collapse;
             background-color: #E1AFD1; /* Pink Lavender */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        th, td {
+        th, td 
+		{
             border: 1px solid #7469B6; /* Lavender Blue */
-            padding: 3px;
+            padding: 8px;
+            text-align: center;
         }
-        th {
+        th
+		{
             background-color: #AD88C6; /* Mauve */
         }
-        input[type="text"], input[type="number"] {
-            width: 91%;
+        input[type="text"], input[type="number"]
+		{
+            width: 90%;
             padding: 6px;
             border: 1px solid #7469B6; /* Lavender Blue */
             border-radius: 4px;
         }
-        #print-button {
+        #print-button 
+		{
             margin-top: 20px;
             cursor: pointer;
             background-color: #7469B6; /* Lavender Blue */
@@ -49,49 +58,40 @@
             border: none;
             padding: 10px 20px;
             border-radius: 4px;
+            font-size: 1rem;
         }
-        #contact-gst-info, #date-time {
+        #contact-gst-info, #date-time 
+		{
             font-family: 'Times New Roman', Times, serif;
         }
-        #contact-gst-info {
+        #contact-gst-info 
+		{
             display: flex;
             justify-content: space-between;
-            margin-top:10px;
-            margin-bottom: 20px;
-            margin-left:5%;
-            width:90%;
+            margin: 10px 5%;
+            width: 90%;
         }
-        #contact-numbers{
-            margin-left:3px;
-            margin-right:3px;
-        }
-        #gst-number{
-            margin-left:3px;
-            margin-right:3px;
-        }
-        #current-date {
+        #current-date 
+		{
             float: left;
-            margin-left:40px;
+            margin-left: 40px;
         }
-        #current-time {
+        #current-time 
+		{
             float: right;
-            margin-right:40px;
+            margin-right: 40px;
         }
-        #customer-details {
+        #customer-details 
+		{
             display: flex;
             justify-content: space-between;
-            margin-top:10px;
-            margin-bottom: 20px;
-            margin-left:5%;
-            width:90%;
+            margin: 10px 5%;
+            width: 90%;
         }
-        #consumer-name{
-            margin-left:3px;
-            margin-right:3px;
-        }
-        #consumer-address{
-            margin-left:3px;
-            margin-right:3px;
+        label 
+		{
+            margin-right: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -108,10 +108,14 @@
     </div>
     <br>
     <div id="customer-details">
-        <label for="consumer-name">Consumer Name:</label>
-        <input type="text" id="consumer-name" name="consumer-name">
-        <label for="consumer-address">Consumer Address:</label>
-        <input type="text" id="consumer-address" name="consumer-address">
+        <div>
+            <label for="consumer-name">Consumer Name:</label>
+            <input type="text" id="consumer-name" name="consumer-name" required>
+        </div>
+        <div>
+            <label for="consumer-address">Consumer Address:</label>
+            <input type="text" id="consumer-address" name="consumer-address" required>
+        </div>
     </div>
     <table>
         <thead>
@@ -127,10 +131,10 @@
         <tbody id="table-body">
             <tr>
                 <td>1</td>
-                <td><input type="text" name="product-name-1"></td>
-                <td><input type="number" name="box-1"></td>
-                <td><input type="number" name="pcs-1"></td>
-                <td><input type="number" name="price-1" oninput="calculateTotal(1)" onkeydown="handleEnter(event)"></td>
+                <td><input type="text" name="product-name-1" oninput="showAutocomplete(this, 1)" required></td>
+                <td><input type="number" name="box-1" min="0" value="0" oninput="calculateTotalBoxes()" required></td>
+                <td><input type="number" name="pcs-1" min="0" value="0" oninput="calculateTotal(1)" required></td>
+                <td><input type="number" name="price-1" min="0" step="0.01" oninput="calculateTotal(1)" onkeydown="handleEnter(event)" required></td>
                 <td><input type="number" name="total-1" readonly></td>
             </tr>
         </tbody>
@@ -147,17 +151,25 @@
     <script>
         let rowCount = 1;
         let grandTotal = 0;
-		let stockList = JSON.parse(localStorage.getItem('stockList')) || [];
+        let stockList = JSON.parse(localStorage.getItem('stockList')) || [];
 
-        function calculateTotal(row) {
-            const price = parseFloat(document.getElementsByName(`price-${row}`)[0].value) || 0;
-            const pcs = parseFloat(document.getElementsByName(`pcs-${row}`)[0].value) || 0;
+        // Function to calculate total for a row
+        function calculateTotal(row)
+		{
+            const priceInput = document.getElementsByName(`price-${row}`)[0];
+            const pcsInput = document.getElementsByName(`pcs-${row}`)[0];
+            const totalInput = document.getElementsByName(`total-${row}`)[0];
+            const price = parseFloat(priceInput.value) || 0;
+            const pcs = parseFloat(pcsInput.value) || 0;
             const total = price * pcs;
-            document.getElementsByName(`total-${row}`)[0].value = total.toFixed(2);
+
+            totalInput.value = total.toFixed(2);
             updateGrandTotal();
         }
 
-        function updateGrandTotal() {
+        // Function to update grand total
+        function updateGrandTotal() 
+		{
             grandTotal = 0;
             const totalInputs = document.querySelectorAll('input[name^="total-"]');
             totalInputs.forEach(input => {
@@ -166,154 +178,304 @@
             document.getElementById('grand-total').value = grandTotal.toFixed(2);
         }
 
-        function handleEnter(event) {
-            if (event.key === 'Enter') {
+        // Function to handle Enter key for adding new rows
+        function handleEnter(event)
+		{
+            if (event.key === 'Enter')
+			{
+                event.preventDefault(); // Prevent form submission
                 addRow();
             }
         }
 
-        function addRow() {
+        // Function to add a new row to the table
+        function addRow()
+		{
             rowCount++;
             const tableBody = document.getElementById('table-body');
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td>${rowCount}</td>
-                <td><input type="text" name="product-name-${rowCount}" oninput="showAutocomplete(this, ${rowCount})"></td>
-                <td><input type="number" name="box-${rowCount}"></td>
-                <td><input type="number" name="pcs-${rowCount}" oninput="calculateTotal(${rowCount})"></td>
-                <td><input type="number" name="price-${rowCount}" oninput="calculateTotal(${rowCount})" onkeydown="handleEnter(event)"></td>
+                <td><input type="text" name="product-name-${rowCount}" oninput="showAutocomplete(this, ${rowCount})" required></td>
+                <td><input type="number" name="box-${rowCount}" min="0" value="0" oninput="calculateTotalBoxes()" required></td>
+                <td><input type="number" name="pcs-${rowCount}" min="0" value="0" oninput="calculateTotal(${rowCount})" required></td>
+                <td><input type="number" name="price-${rowCount}" min="0" step="0.01" oninput="calculateTotal(${rowCount})" onkeydown="handleEnter(event)" required></td>
                 <td><input type="number" name="total-${rowCount}" readonly></td>
             `;
             tableBody.appendChild(newRow);
-            const nextCell = document.getElementsByName(`product-name-${rowCount}`)[0];
-            if (nextCell) {
-                nextCell.focus();
+            attachBoxInputListener(newRow);
+            const nextProductInput = document.getElementsByName(`product-name-${rowCount}`)[0];
+            if (nextProductInput) {
+                nextProductInput.focus();
             }
         }
 
-        function handleArrowKeys(event) {
-            const activeElement = document.activeElement;
-            const cellIndex = activeElement.parentElement.cellIndex;
-            const rowIndex = activeElement.parentElement.parentElement.rowIndex;
-            if (event.key === 'ArrowRight') {
-                const nextCell = activeElement.parentElement.nextElementSibling;
-                if (nextCell) {
-                    nextCell.querySelector('input').focus();
-                }
-            } else if (event.key === 'ArrowLeft') {
-                const prevCell = activeElement.parentElement.previousElementSibling;
-                if (prevCell) {
-                    prevCell.querySelector('input').focus();
-                }
-            } else if (event.key === 'ArrowDown') {
-                const nextRow = activeElement.parentElement.parentElement.nextElementSibling;
-                if (nextRow) {
-                    const targetCell = nextRow.cells[cellIndex];
-                    targetCell.querySelector('input').focus();
-                }
-            } else if (event.key === 'ArrowUp') {
-                const prevRow = activeElement.parentElement.parentElement.previousElementSibling;
-                if (prevRow) {
-                    const targetCell = prevRow.cells[cellIndex];
-                    targetCell.querySelector('input').focus();
-                }
+        // Function to attach event listeners to box inputs
+        function attachBoxInputListener(row)
+		{
+            const boxInput = row.querySelector('input[name^="box-"]');
+            if (boxInput) 
+			{
+                boxInput.addEventListener('input', calculateTotalBoxes);
             }
         }
-			  function showAutocomplete(input, row) {
+
+        // Function to handle arrow keys navigation
+        function handleArrowKeys(event) 
+		{
+            const activeElement = document.activeElement;
+            if (!activeElement || !activeElement.name) return;
+
+            const cellIndex = activeElement.parentElement.cellIndex;
+            const rowIndex = activeElement.parentElement.parentElement.rowIndex;
+            const table = document.querySelector('table');
+            const totalRows = table.rows.length;
+            const totalCols = table.rows[0].cells.length;
+
+            switch (event.key)
+			{
+                case 'ArrowRight':
+                    if (cellIndex < totalCols - 1)
+					{
+                        const nextCell = table.rows[rowIndex].cells[cellIndex + 1];
+                        const nextInput = nextCell.querySelector('input');
+                        if (nextInput) nextInput.focus();
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (cellIndex > 0)
+					{
+                        const prevCell = table.rows[rowIndex].cells[cellIndex - 1];
+                        const prevInput = prevCell.querySelector('input');
+                        if (prevInput) prevInput.focus();
+                    }
+                    break;
+                case 'ArrowDown':
+                    if (rowIndex < totalRows - 1) 
+					{
+                        const targetRow = table.rows[rowIndex + 1];
+                        const targetCell = targetRow.cells[cellIndex];
+                        const targetInput = targetCell.querySelector('input');
+                        if (targetInput) targetInput.focus();
+                    }
+                    break;
+                case 'ArrowUp':
+                    if (rowIndex > 1) 
+					{ // Skip header row
+                        const targetRow = table.rows[rowIndex - 1];
+                        const targetCell = targetRow.cells[cellIndex];
+                        const targetInput = targetCell.querySelector('input');
+                        if (targetInput) targetInput.focus();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Function to show autocomplete suggestions
+        function showAutocomplete(input, row)
+		{
             const value = input.value.toLowerCase();
             const suggestions = stockList.filter(stock => stock.productName.toLowerCase().includes(value));
             let dropdown = document.getElementById(`autocomplete-${row}`);
-            if (!dropdown) {
-                dropdown = document.createElement('div');
-                dropdown.id = `autocomplete-${row}`;
-                dropdown.style.position = 'absolute';
-                dropdown.style.border = '1px solid #ccc';
-                dropdown.style.backgroundColor = '#fff';
-                dropdown.style.zIndex = '1000';
-                input.parentElement.appendChild(dropdown);
+
+            // Remove existing dropdown if any
+            if (dropdown) 
+			{
+                dropdown.remove();
             }
-            dropdown.innerHTML = '';
-            suggestions.forEach(suggestion => {
+
+            if (suggestions.length === 0 || value === '') return;
+
+            dropdown = document.createElement('div');
+            dropdown.id = `autocomplete-${row}`;
+            dropdown.style.position = 'absolute';
+            dropdown.style.border = '1px solid #ccc';
+            dropdown.style.backgroundColor = '#fff';
+            dropdown.style.zIndex = '1000';
+            dropdown.style.width = `${input.offsetWidth}px`;
+            dropdown.style.maxHeight = '150px';
+            dropdown.style.overflowY = 'auto';
+
+            suggestions.forEach(suggestion =>
+			{
                 const option = document.createElement('div');
                 option.textContent = suggestion.productName;
                 option.style.padding = '4px';
                 option.style.cursor = 'pointer';
-                option.addEventListener('click', () => {
+                option.addEventListener('click', () =>
+				{
                     input.value = suggestion.productName;
-                    dropdown.innerHTML = '';
+                    dropdown.remove();
                 });
                 dropdown.appendChild(option);
             });
+
+            input.parentElement.style.position = 'relative';
+            input.parentElement.appendChild(dropdown);
         }
 
-       function saveAndPrint() {
-            const customerName = document.getElementById('consumer-name').value;
-            const customerAddress = document.getElementById('consumer-address').value;
+        // Function to calculate total boxes
+        function calculateTotalBoxes() 
+		{
+            let totalBoxes = 0;
+            const boxInputs = document.querySelectorAll('input[name^="box-"]');
+            boxInputs.forEach(input =>
+			{
+                const boxCount = parseInt(input.value) || 0;
+                totalBoxes += boxCount;
+            });
+            document.getElementById('total-boxes').textContent = totalBoxes;
+        }
+
+        // Function to save the bill and print
+        function saveAndPrint() 
+		{
+			
+            const customerName = document.getElementById('consumer-name').value.trim();
+            const customerAddress = document.getElementById('consumer-address').value.trim();
+
+            if (customerName === '' || customerAddress === '') 
+			{
+                alert('Please enter both Consumer Name and Address.');
+                return;
+            }
+
             const billItems = [];
             const rows = document.querySelectorAll('#table-body tr');
-            rows.forEach((row, index) => {
-                const productName = row.querySelector(`input[name="product-name-${index + 1}"]`).value;
-                const pcs = parseInt(row.querySelector(`input[name="pcs-${index + 1}"]`).value) || 0;
-                const price = parseFloat(row.querySelector(`input[name="price-${index + 1}"]`).value) || 0;
-                const total = pcs * price;
-                billItems.push({ productName, pcs, price, total });
-				 window.print();
+
+            for (let i = 0; i < rows.length; i++)
+			{
+                const rowIndex = i + 1;
+                const productName = rows[i].querySelector(`input[name="product-name-${rowIndex}"]`).value.trim();
+                const box = parseInt(rows[i].querySelector(`input[name="box-${rowIndex}"]`).value) || 0;
+                const pcs = parseInt(rows[i].querySelector(`input[name="pcs-${rowIndex}"]`).value) || 0;
+                const price = parseFloat(rows[i].querySelector(`input[name="price-${rowIndex}"]`).value) || 0;
+                const total = parseFloat(rows[i].querySelector(`input[name="total-${rowIndex}"]`).value) || 0;
+
+                if (productName === '' && box === 0 && pcs === 0 && price === 0)
+				{
+                    continue; // Skip empty rows
+                }
+
+                billItems.push(
+				{ 
+                    name: productName, 
+                    box: box, 
+                    pcs: pcs, 
+                    price: price, 
+                    total: total 
+                });
 
                 // Update stock quantity
                 updateStockQuantity(productName, pcs);
-            });
+            }
 
-            // Save bill logic
-            const bills = JSON.parse(localStorage.getItem('bills')) || [];
-            const newBill = {
-                customerName,
-                customerAddress,
-                billItems,
-                grandTotal,
+            if (billItems.length === 0)
+			{
+                alert('Please enter at least one product to save the bill.');
+                return;
+            }
+
+            const newBill = 
+			{
                 date: new Date().toLocaleDateString(),
-                time: new Date().toLocaleTimeString()
+                time: new Date().toLocaleTimeString(),
+                total: grandTotal,
+                items: billItems
             };
-            bills.push(newBill);
-            localStorage.setItem('bills', JSON.stringify(bills));
 
+             // Retrieve existing customers from local storage
+			let customers = JSON.parse(localStorage.getItem('customers')) || [];
+    
+			 let customer = customers.find(cust => 
+				cust && cust.name && cust.name.toLowerCase().trim() === customerName.toLowerCase().trim()
+			);
+            if (!customer)
+			{
+				alert('Customer name is not in the existing customer list.');
+				return; // Stop the process if the customer doesn't exist
+			}
+			
+            // Add the new bill to the customer's bills
+            customer.bills.push(newBill);
+            localStorage.setItem('customers', JSON.stringify(customers));
+
+            alert('Bill saved successfully!');
             window.print();
+			
+			
+			// Redirect to the customer_bills.html with the customer ID
+			window.location.href = `customer_bills.html?id=${customer.id}`;
+		
         }
 
-        window.onload = function() {
-            updateTime();
-			calculateTotalBoxes();
-        };
-		 function updateTime() {
+        // Function to update stock quantity
+        function updateStockQuantity(productName, box, pcs)
+		{
+            if (!productName) return;
+
+            // Find the product in stockList
+            let product = stockList.find(stock => stock.productName.toLowerCase() === productName.toLowerCase());
+
+            if (product)
+			{
+                // Update the stock based on box and pcs
+                // Assuming each box contains a fixed number of pcs, e.g., 10 pcs per box
+                const pcsPerBox = product.pcsPerBox || 10; // Default to 10 if not defined
+                const totalPcsSold = (box * pcsPerBox) + pcs;
+
+                // Update the stock quantity
+                product.stockQuantity = (product.stockQuantity || 0) - totalPcsSold;
+
+                // Ensure stock doesn't go negative
+                if (product.stockQuantity < 0)
+				{
+                    product.stockQuantity = 0;
+                    alert(`Stock for ${productName} has been depleted.`);
+                }
+
+                // Save the updated stockList back to local storage
+                localStorage.setItem('stockList', JSON.stringify(stockList));
+            } 
+			else
+			{
+                // If product doesn't exist in stockList, optionally add it
+                // For now, we'll alert the user
+                alert(`Product "${productName}" not found in stock list.`);
+            }
+        }
+
+        // Function to update current date and time
+        function updateTime()
+		{
             const currentDate = new Date();
             const formattedDate = currentDate.toLocaleDateString();
             const formattedTime = currentDate.toLocaleTimeString();
             document.getElementById('current-date').textContent = `Date: ${formattedDate}`;
             document.getElementById('current-time').textContent = `Time: ${formattedTime}`;
         }
+
+        // Initialize the page
+        window.onload = function() 
+		{
+            updateTime();
+            calculateTotalBoxes();
+
+            // Attach box input listeners to existing rows
+            const existingRows = document.querySelectorAll('#table-body tr');
+            existingRows.forEach(row => 
+			{
+                attachBoxInputListener(row);
+            });
+        };
+
+        // Update the time every second
         setInterval(updateTime, 1000);
+
+        // Add event listener for arrow keys navigation
         document.addEventListener('keydown', handleArrowKeys);
-		
-		function calculateTotalBoxes() {
-    let totalBoxes = 0;
-    const rows = document.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        const boxInput = row.querySelector('input[name^="box-"]');
-        const boxCount = parseInt(boxInput.value) || 0;
-        totalBoxes += boxCount;
-    });
-    document.getElementById('total-boxes').textContent = totalBoxes;
-}
-
-// Call calculateTotalBoxes when the page loads and whenever a box value changes
-window.onload = function() {
-    calculateTotalBoxes();
-};
-
-// Update the total count of boxes when a box value changes
-document.querySelectorAll('input[name^="box-"]').forEach(input => {
-    input.addEventListener('input', calculateTotalBoxes);
-});
-		
     </script>
 </body>
 </html>

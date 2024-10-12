@@ -28,7 +28,7 @@
         const customer = customers.find(cust => cust.id == customerId);
 
         if (customer) {
-            document.getElementById('customerName').textContent = customer.shopName;
+            document.getElementById('customerName').textContent = customer.name;
             const billsContainer = document.getElementById('billsContainer');
             customer.bills.forEach((bill, index) => {
                 const billDiv = document.createElement('div');

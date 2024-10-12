@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Seller</title>
+    <title>Add Customer</title>
     <style>
         /* Reset some default styles */
         * {
@@ -51,8 +51,7 @@
         }
 
         input[type="text"],
-        input[type="tel"],
-        input[type="number"] {
+        input[type="tel"] {
             padding: 12px 15px;
             margin-bottom: 20px;
             border: none;
@@ -64,8 +63,7 @@
         }
 
         input[type="text"]:focus,
-        input[type="tel"]:focus,
-        input[type="number"]:focus {
+        input[type="tel"]:focus {
             background: #3d566e;
             outline: none;
             transform: translateY(-2px);
@@ -126,71 +124,86 @@
 </head>
 <body>
     <div class="container">
-        <h1>Enter Seller Details</h1>
-        <form id="sellerForm">
-            <label for="companyName">Company Name:</label>
-            <input type="text" id="companyName" name="companyName" required>
+        <h1>Enter Customer Details</h1>
+        <form id="customerForm">
+            <label for="shopName">Shop Name:</label>
+            <input type="text" id="shopName" name="shopName" required>
 
-            <label for="address">Address:</label>
-            <input type="text" id="address" name="address" required>
+            <label for="phoneNumber">Phone Number:</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber" required>
 
-            <label for="contactNumber">Contact Number:</label>
-            <input type="tel" id="contactNumber" name="contactNumber" required>
-
-            <label for="accountNumber">Account Number:</label>
-            <input type="number" id="accountNumber" name="accountNumber" required>
+            <label for="shopAddress">Shop Address:</label>
+            <input type="text" id="shopAddress" name="shopAddress" required>
 
             <label for="gstNumber">GST Number:</label>
             <input type="text" id="gstNumber" name="gstNumber" required>
 
             <div class="button-container">
                 <button type="submit">Save</button>
-                <button type="button" onclick="navigateToSellerDetails()">View Sellers</button>
+                <button type="button" onclick="navigateToDisplay()">View Customers</button>
             </div>
         </form>
     </div>
     <script>
-        document.getElementById('sellerForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+	
+	
+		
+        // Function to handle form submission and save customer data
+        document.getElementById('customerForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent default form submission
 
-            const companyName = document.getElementById('companyName').value.trim();
-            const address = document.getElementById('address').value.trim();
-            const contactNumber = document.getElementById('contactNumber').value.trim();
-            const accountNumber = document.getElementById('accountNumber').value.trim();
+            // Get form values
+            const shopName = document.getElementById('shopName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const shopAddress = document.getElementById('shopAddress').value.trim();
             const gstNumber = document.getElementById('gstNumber').value.trim();
 
-            const sellerData = {
-                id: Date.now(),
-                companyName,
-                address,
-                contactNumber,
-                accountNumber,
-                gstNumber
+            // Customer object to be saved
+            const newCustomer = {
+                id: Date.now(),  // Unique ID for the customer
+                shopName,
+                phoneNumber,
+                shopAddress,
+                gstNumber,
+                bills: []  // Placeholder for future bills
             };
 
-            let sellers = JSON.parse(localStorage.getItem('sellers')) || [];
+            // Get existing customers from local storage, or start with an empty array
+            let customers = JSON.parse(localStorage.getItem('customers')) || [];
 
-            const sellerExists = sellers.some(seller =>
-                seller.companyName.toLowerCase() === companyName.toLowerCase() &&
-                seller.address.toLowerCase() === address.toLowerCase() &&
-                seller.contactNumber === contactNumber &&
-                seller.accountNumber === accountNumber &&
-                seller.gstNumber.toUpperCase() === gstNumber.toUpperCase()
+            // Check if the customer already exists in localStorage
+            const customerExists = customers.some(customer =>
+                customer.shopName.toLowerCase() === shopName.toLowerCase() &&
+                customer.phoneNumber === phoneNumber &&
+                customer.shopAddress.toLowerCase() === shopAddress.toLowerCase() &&
+                customer.gstNumber.toUpperCase() === gstNumber.toUpperCase()
             );
 
-            if (sellerExists) {
-                alert('Seller details already submitted.');
+            if (customerExists) {
+                alert('Customer already exists.');
             } else {
-                sellers.push(sellerData);
-                localStorage.setItem('sellers', JSON.stringify(sellers));
-                alert('Seller details saved!');
-                document.getElementById('sellerForm').reset();
+                // Add the new customer to the array
+                customers.push(newCustomer);
+                // Save the updated customer array back to localStorage
+                localStorage.setItem('customers', JSON.stringify(customers));
+                // Alert the user and reset the form
+                alert('Customer details saved!');
+                document.getElementById('customerForm').reset();
+				
+				 // Re-render customer list
+            renderCustomers();
             }
         });
 
-        function navigateToSellerDetails() {
-            window.location.href = 'seller details.html';
+        // Function to navigate to the customer details page
+        function navigateToDisplay() {
+            window.location.href = 'customer details.html';  // Redirect to customer details page
         }
     </script>
 </body>
 </html>
+
+
+
+
+          
