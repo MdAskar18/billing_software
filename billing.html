@@ -4,95 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A.S.T Billing Page</title>
+	<link rel="icon" type="image/x-icon" href="as logo.png">
     <style>
-        body
-		{
-            font-family: 'Georgia', serif;
-            background-color: #FFE6E6; /* Light Pink */
-            color: #333;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        h1 
-		{
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #7469B6; /* Lavender Blue */
-        }
-        h6 
-		{
-            color: #AD88C6; /* Mauve */
-        }
-        table
-		{
-            width: 90%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background-color: #E1AFD1; /* Pink Lavender */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        th, td 
-		{
-            border: 1px solid #7469B6; /* Lavender Blue */
-            padding: 8px;
-            text-align: center;
-        }
-        th
-		{
-            background-color: #AD88C6; /* Mauve */
-        }
-        input[type="text"], input[type="number"]
-		{
-            width: 90%;
-            padding: 6px;
-            border: 1px solid #7469B6; /* Lavender Blue */
-            border-radius: 4px;
-        }
-        #print-button 
-		{
-            margin-top: 20px;
-            cursor: pointer;
-            background-color: #7469B6; /* Lavender Blue */
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-        #contact-gst-info, #date-time 
-		{
-            font-family: 'Times New Roman', Times, serif;
-        }
-        #contact-gst-info 
-		{
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 5%;
-            width: 90%;
-        }
-        #current-date 
-		{
-            float: left;
-            margin-left: 40px;
-        }
-        #current-time 
-		{
-            float: right;
-            margin-right: 40px;
-        }
-        #customer-details 
-		{
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 5%;
-            width: 90%;
-        }
-        label 
-		{
-            margin-right: 5px;
-            font-weight: bold;
-        }
+        body {
+    font-family: 'Merriweather', serif; /* Elegant serif font */
+    background-color: #f5f5f5; /* Light grey for classy look */
+    color: #333; /* Dark grey text for readability */
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333; /* Dark grey for elegance */
+    text-transform: uppercase;
+}
+
+h6 {
+    color: #6b8e23; /* Olive green for a sophisticated feel */
+    font-style: italic;
+}
+
+table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff; /* White for a clean look */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+}
+
+th, td {
+    border: 1px solid #ddd; /* Soft grey borders */
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #6b8e23; /* Olive green header */
+    color: #fff; /* White text for contrast */
+}
+
+input[type="text"], input[type="number"] {
+    width: 90%;
+    padding: 8px;
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #f0f0f0; /* Light background for input fields */
+    transition: background 0.3s, transform 0.2s;
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+    background-color: #e0e0e0; /* Slightly darker on focus */
+    outline: none;
+    transform: translateY(-2px); /* Slight lift on focus */
+}
+
+#print-button {
+    margin-top: 20px;
+    cursor: pointer;
+    background-color: #6b8e23; /* Olive green button */
+    color: #fff; /* White text */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+#print-button:hover {
+    background-color: #556b2f; /* Darker green on hover */
+    transform: translateY(-2px);
+}
+
+#contact-gst-info, #date-time {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#contact-gst-info {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 5%;
+    width: 90%;
+}
+
+#customer-details {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 5%;
+    width: 90%;
+}
+
+label {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
     </style>
 </head>
 <body>
@@ -149,13 +159,13 @@
     <button id="print-button" onclick="saveAndPrint()">Save and Print</button>
 
     <script>
+		let stockList = JSON.parse(localStorage.getItem('stockList')) || [];
         let rowCount = 1;
         let grandTotal = 0;
-        let stockList = JSON.parse(localStorage.getItem('stockList')) || [];
+        
 
         // Function to calculate total for a row
-        function calculateTotal(row)
-		{
+        function calculateTotal(row) {
             const priceInput = document.getElementsByName(`price-${row}`)[0];
             const pcsInput = document.getElementsByName(`pcs-${row}`)[0];
             const totalInput = document.getElementsByName(`total-${row}`)[0];
@@ -168,8 +178,7 @@
         }
 
         // Function to update grand total
-        function updateGrandTotal() 
-		{
+        function updateGrandTotal() {
             grandTotal = 0;
             const totalInputs = document.querySelectorAll('input[name^="total-"]');
             totalInputs.forEach(input => {
@@ -179,18 +188,15 @@
         }
 
         // Function to handle Enter key for adding new rows
-        function handleEnter(event)
-		{
-            if (event.key === 'Enter')
-			{
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
                 event.preventDefault(); // Prevent form submission
                 addRow();
             }
         }
 
         // Function to add a new row to the table
-        function addRow()
-		{
+        function addRow() {
             rowCount++;
             const tableBody = document.getElementById('table-body');
             const newRow = document.createElement('tr');
@@ -211,18 +217,15 @@
         }
 
         // Function to attach event listeners to box inputs
-        function attachBoxInputListener(row)
-		{
+        function attachBoxInputListener(row) {
             const boxInput = row.querySelector('input[name^="box-"]');
-            if (boxInput) 
-			{
+            if (boxInput) {
                 boxInput.addEventListener('input', calculateTotalBoxes);
             }
         }
 
         // Function to handle arrow keys navigation
-        function handleArrowKeys(event) 
-		{
+        function handleArrowKeys(event) {
             const activeElement = document.activeElement;
             if (!activeElement || !activeElement.name) return;
 
@@ -232,27 +235,23 @@
             const totalRows = table.rows.length;
             const totalCols = table.rows[0].cells.length;
 
-            switch (event.key)
-			{
+            switch (event.key) {
                 case 'ArrowRight':
-                    if (cellIndex < totalCols - 1)
-					{
+                    if (cellIndex < totalCols - 1) {
                         const nextCell = table.rows[rowIndex].cells[cellIndex + 1];
                         const nextInput = nextCell.querySelector('input');
                         if (nextInput) nextInput.focus();
                     }
                     break;
                 case 'ArrowLeft':
-                    if (cellIndex > 0)
-					{
+                    if (cellIndex > 0) {
                         const prevCell = table.rows[rowIndex].cells[cellIndex - 1];
                         const prevInput = prevCell.querySelector('input');
                         if (prevInput) prevInput.focus();
                     }
                     break;
                 case 'ArrowDown':
-                    if (rowIndex < totalRows - 1) 
-					{
+                    if (rowIndex < totalRows - 1) {
                         const targetRow = table.rows[rowIndex + 1];
                         const targetCell = targetRow.cells[cellIndex];
                         const targetInput = targetCell.querySelector('input');
@@ -260,8 +259,7 @@
                     }
                     break;
                 case 'ArrowUp':
-                    if (rowIndex > 1) 
-					{ // Skip header row
+                    if (rowIndex > 1) { // Skip header row
                         const targetRow = table.rows[rowIndex - 1];
                         const targetCell = targetRow.cells[cellIndex];
                         const targetInput = targetCell.querySelector('input');
@@ -274,15 +272,13 @@
         }
 
         // Function to show autocomplete suggestions
-        function showAutocomplete(input, row)
-		{
+        function showAutocomplete(input, row) {
             const value = input.value.toLowerCase();
             const suggestions = stockList.filter(stock => stock.productName.toLowerCase().includes(value));
             let dropdown = document.getElementById(`autocomplete-${row}`);
 
             // Remove existing dropdown if any
-            if (dropdown) 
-			{
+            if (dropdown) {
                 dropdown.remove();
             }
 
@@ -298,14 +294,12 @@
             dropdown.style.maxHeight = '150px';
             dropdown.style.overflowY = 'auto';
 
-            suggestions.forEach(suggestion =>
-			{
+            suggestions.forEach(suggestion => {
                 const option = document.createElement('div');
                 option.textContent = suggestion.productName;
                 option.style.padding = '4px';
                 option.style.cursor = 'pointer';
-                option.addEventListener('click', () =>
-				{
+                option.addEventListener('click', () => {
                     input.value = suggestion.productName;
                     dropdown.remove();
                 });
@@ -317,12 +311,10 @@
         }
 
         // Function to calculate total boxes
-        function calculateTotalBoxes() 
-		{
+        function calculateTotalBoxes() {
             let totalBoxes = 0;
             const boxInputs = document.querySelectorAll('input[name^="box-"]');
-            boxInputs.forEach(input =>
-			{
+            boxInputs.forEach(input => {
                 const boxCount = parseInt(input.value) || 0;
                 totalBoxes += boxCount;
             });
@@ -330,14 +322,11 @@
         }
 
         // Function to save the bill and print
-        function saveAndPrint() 
-		{
-			
+        function saveAndPrint() {
             const customerName = document.getElementById('consumer-name').value.trim();
             const customerAddress = document.getElementById('consumer-address').value.trim();
 
-            if (customerName === '' || customerAddress === '') 
-			{
+            if (customerName === '' || customerAddress === '') {
                 alert('Please enter both Consumer Name and Address.');
                 return;
             }
@@ -345,8 +334,7 @@
             const billItems = [];
             const rows = document.querySelectorAll('#table-body tr');
 
-            for (let i = 0; i < rows.length; i++)
-			{
+            for (let i = 0; i < rows.length; i++) {
                 const rowIndex = i + 1;
                 const productName = rows[i].querySelector(`input[name="product-name-${rowIndex}"]`).value.trim();
                 const box = parseInt(rows[i].querySelector(`input[name="box-${rowIndex}"]`).value) || 0;
@@ -354,13 +342,11 @@
                 const price = parseFloat(rows[i].querySelector(`input[name="price-${rowIndex}"]`).value) || 0;
                 const total = parseFloat(rows[i].querySelector(`input[name="total-${rowIndex}"]`).value) || 0;
 
-                if (productName === '' && box === 0 && pcs === 0 && price === 0)
-				{
+                if (productName === '' && box === 0 && pcs === 0 && price === 0) {
                     continue; // Skip empty rows
                 }
 
-                billItems.push(
-				{ 
+                billItems.push({ 
                     name: productName, 
                     box: box, 
                     pcs: pcs, 
@@ -369,87 +355,73 @@
                 });
 
                 // Update stock quantity
-                updateStockQuantity(productName, pcs);
+                updatequantity(productName, pcs);
             }
 
-            if (billItems.length === 0)
-			{
+            if (billItems.length === 0) {
                 alert('Please enter at least one product to save the bill.');
                 return;
             }
 
-            const newBill = 
-			{
+            const newBill = {
                 date: new Date().toLocaleDateString(),
                 time: new Date().toLocaleTimeString(),
                 total: grandTotal,
                 items: billItems
             };
 
-             // Retrieve existing customers from local storage
-			let customers = JSON.parse(localStorage.getItem('customers')) || [];
-    
-			 let customer = customers.find(cust => 
-				cust && cust.name && cust.name.toLowerCase().trim() === customerName.toLowerCase().trim()
-			);
-            if (!customer)
-			{
-				alert('Customer name is not in the existing customer list.');
-				return; // Stop the process if the customer doesn't exist
-			}
-			
+            // Retrieve existing customers from local storage
+            let customers = JSON.parse(localStorage.getItem('customers')) || [];
+
+            let customer = customers.find(cust => 
+                cust.shopName.toLowerCase().trim() === customerName.toLowerCase().trim()
+            );
+            if (!customer) {
+                alert('Customer name is not in the existing customer list.');
+                return;
+            }
+            
             // Add the new bill to the customer's bills
             customer.bills.push(newBill);
             localStorage.setItem('customers', JSON.stringify(customers));
 
             alert('Bill saved successfully!');
             window.print();
-			
-			
-			// Redirect to the customer_bills.html with the customer ID
-			window.location.href = `customer_bills.html?id=${customer.id}`;
-		
+
+            // Redirect to customer bills with the customer ID
+            window.location.href = `customer_bills.html?id=${customer.id}`;
         }
 
         // Function to update stock quantity
-        function updateStockQuantity(productName, box, pcs)
-		{
+        function updatequantity(productName, pcs , price) {
             if (!productName) return;
 
             // Find the product in stockList
             let product = stockList.find(stock => stock.productName.toLowerCase() === productName.toLowerCase());
 
-            if (product)
-			{
-                // Update the stock based on box and pcs
+            if (product) {
                 // Assuming each box contains a fixed number of pcs, e.g., 10 pcs per box
                 const pcsPerBox = product.pcsPerBox || 10; // Default to 10 if not defined
-                const totalPcsSold = (box * pcsPerBox) + pcs;
+                const totalPcsSold = pcs;
 
                 // Update the stock quantity
-                product.stockQuantity = (product.stockQuantity || 0) - totalPcsSold;
+                product.quantity = (product.quantity || 0) - totalPcsSold;
 
                 // Ensure stock doesn't go negative
-                if (product.stockQuantity < 0)
-				{
-                    product.stockQuantity = 0;
+                if (product.quantity < 0) {
+                    product.quantity = 0;
                     alert(`Stock for ${productName} has been depleted.`);
                 }
 
                 // Save the updated stockList back to local storage
                 localStorage.setItem('stockList', JSON.stringify(stockList));
-            } 
-			else
-			{
-                // If product doesn't exist in stockList, optionally add it
-                // For now, we'll alert the user
+            } else {
                 alert(`Product "${productName}" not found in stock list.`);
             }
         }
 
         // Function to update current date and time
-        function updateTime()
-		{
+        function updateTime() {
             const currentDate = new Date();
             const formattedDate = currentDate.toLocaleDateString();
             const formattedTime = currentDate.toLocaleTimeString();
@@ -458,15 +430,13 @@
         }
 
         // Initialize the page
-        window.onload = function() 
-		{
+        window.onload = function() {
             updateTime();
             calculateTotalBoxes();
 
             // Attach box input listeners to existing rows
             const existingRows = document.querySelectorAll('#table-body tr');
-            existingRows.forEach(row => 
-			{
+            existingRows.forEach(row => {
                 attachBoxInputListener(row);
             });
         };

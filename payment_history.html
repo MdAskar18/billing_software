@@ -3,24 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment History</title>
+    <title>Enhanced Payment History with Visuals and Receipts</title>
+    <link rel="icon" type="image/x-icon" href="as logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        #paymentHistoryContainer {
+            max-width: 1100px;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #4A90E2;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .input-group input, .input-group select, .input-group button {
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #f7f7f7;
+            color: #4A90E2;
+        }
+        .summary {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .receipt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #chartContainer {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        #chartContainer {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1 id="customerName">Customer Name</h1>
-    <div id="paymentHistoryContainer"></div>
+    <div id="paymentHistoryContainer">
+        <div class="input-group">
+            <input type="date" id="paymentDate" placeholder="Date">
+            <input type="number" id="paymentAmount" placeholder="Amount">
+            <select id="paymentMethod">
+                <option value="Cash">Cash</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+            <input type="text" id="paymentDescription" placeholder="Description">
+            <button onclick="addPayment()">Add Payment</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Description</th>
+                    <th>Receipt</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="paymentHistoryTable">
+                <!-- Payment data will be injected here -->
+            </tbody>
+        </table>
+        <div class="summary" id="transactionSummary">Outstanding Balance: $0.00 | Total Transactions: 0</div>
+    </div>
+
+    <!-- Chart Container for Visual Insights -->
+    <div id="chartContainer">
+        <canvas id="paymentChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const customers = JSON.parse(localStorage.getItem('customers')) || [];
         const params = new URLSearchParams(window.location.search);
         const customerId = params.get('id');
+        const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let payments = JSON.parse(localStorage.getItem('customerPayments')) || [];
 
         const customer = customers.find(cust => cust.id == customerId);
-
         if (customer) {
             document.getElementById('customerName').innerText = customer.shopName;
-            // Load and display payment history for the customer
+            loadCustomerPayments();
+            renderPayments();
+            updateSummary();
+            updateChart(); // Initial chart update
         } else {
-            document.body.innerHTML = '<p>Customer not found.</p>';
+            document.getElementById('paymentHistoryContainer').innerHTML = '<p>Customer not found.</p>';
         }
+
+        function loadCustomerPayments() {
+            payments = payments.filter(payment => payment.customerId === customerId);
+        }
+
+        function addPayment() {
+            const date = document.getElementById('paymentDate').value;
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const method = document.getElementById('paymentMethod').value;
+            const description = document.getElementById('paymentDescription').value;
+
+            if (date && !isNaN(amount) && method && description) {
+                const payment = { customerId, date, amount, method, description, receipt: null };
+                
+                if (customer) {
+                    payments.push(payment);
+                    savePayments();
+                    reduceOutstandingBalance(amount); // Reduce the balance by the payment amount
+                    renderPayments();
+                    updateChart(); // Update chart with new data
+                    clearInputs();
+                } else {
+                    alert('Customer not found.');
+                }
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        function savePayments() {
+            localStorage.setItem('customerPayments', JSON.stringify(payments));
+        }
+
+        function saveCustomerData() {
+            localStorage.setItem('customers', JSON.stringify(customers));
+        }
+
+        function adjustOutstandingBalance(amount) {
+            if (customer) {
+                customer.totalBillAmount = (customer.totalBillAmount || 0) + amount;
+                saveCustomerData();
+                updateSummary();
+                updateChart(); // Refresh the chart after adding a new bill
+            }
+        }
+
+        function reduceOutstandingBalance(paymentAmount) {
+            if (customer) {
+                customer.totalBillAmount = (customer.totalBillAmount || 0) - paymentAmount;
+                saveCustomerData();
+                updateSummary();
+                updateChart(); // Refresh the chart after making a payment
+            }
+        }
+
+        function renderPayments() {
+            const tableBody = document.getElementById('paymentHistoryTable');
+            tableBody.innerHTML = payments.length ? payments.map((payment, index) => `
+                <tr>
+                    <td>${payment.date}</td>
+                    <td>${payment.amount.toFixed(2)}</td>
+                    <td>${payment.method}</td>
+                    <td>${payment.description}</td>
+                    <td>
+                        ${payment.receipt ? `<a href="${payment.receipt}" target="_blank">View Receipt</a>` : 
+                        `<input type="file" accept="image/*,application/pdf" onchange="uploadReceipt(${index}, this)">`}
+                    </td>
+                    <td>
+                        <button onclick="deletePayment(${index})">Delete</button>
+                    </td>
+                </tr>
+            `).join('') : `<tr><td colspan="6">No payments found</td></tr>`;
+
+            updateSummary();
+        }
+
+        function deletePayment(index) {
+            const removedPayment = payments[index];
+            payments.splice(index, 1);
+            savePayments();
+            renderPayments();
+            reduceOutstandingBalance(-removedPayment.amount); // Increase balance by deleted payment amount
+            updateChart(); // Refresh chart after deletion
+        }
+
+        function updateSummary() {
+            const outstandingBalance = customer ? (customer.totalBillAmount || 0) : 0;
+            document.getElementById('transactionSummary').innerText = `Outstanding Balance: $${outstandingBalance.toFixed(2)} | Total Transactions: ${payments.length}`;
+        }
+
+        function clearInputs() {
+            document.getElementById('paymentDate').value = '';
+            document.getElementById('paymentAmount').value = '';
+            document.getElementById('paymentMethod').value = 'Cash';
+            document.getElementById('paymentDescription').value = '';
+        }
+
+        function uploadReceipt(index, fileInput) {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    payments[index].receipt = e.target.result;
+                    savePayments();
+                    renderPayments();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Initialize Chart
+        let paymentChart;
+        function initializeChart() {
+            const ctx = document.getElementById('paymentChart').getContext('2d');
+            paymentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [], // Dates of transactions
+                    datasets: [
+                        {
+                            label: 'Total Owed',
+                            data: [],
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        },
+                        {
+                            label: 'Payments Made',
+                            data: [],
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { title: { display: true, text: 'Date' } },
+                        y: { title: { display: true, text: 'Amount' } }
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            const dates = payments.map(payment => payment.date);
+            const amounts = payments.map(payment => payment.amount);
+            const totalOwed = customer ? (customer.totalBillAmount || 0) : 0;
+            
+            paymentChart.data.labels = dates;
+            paymentChart.data.datasets[0].data = Array(dates.length).fill(totalOwed);
+            paymentChart.data.datasets[1].data = amounts;
+            paymentChart.update();
+        }
+
+        window.onload = () => {
+            renderPayments();
+            updateSummary();
+            initializeChart();
+            updateChart();
+        };
     </script>
 </body>
 </html>

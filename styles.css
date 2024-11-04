@@ -1,119 +1,164 @@
+/* Reset some default styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to right, #434343, #000000);
-    color: #fff;
+    font-family: 'Merriweather', serif; /* Elegant serif font */
+    background: linear-gradient(135deg, #f5f5f5, #eaeaea); /* Soft grey gradient for classy look */
+    color: #333; /* Dark grey text */
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    min-height: 100vh;
 }
 
-
+/* Container styles for centered content */
 .container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
     text-align: center;
 }
 
-label {
-    display: block;
-    margin: 10px 0 5px;
-    text-align: left;
+/* Heading styles */
+h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
-input {
-    width: 100%;
-    padding: 8px;
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="number"],
+select {
+    padding: 12px;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    background: #f0f0f0;
+    color: #333;
+    transition: background 0.3s, transform 0.2s;
+}
+
+input:focus {
+    background: #e0e0e0;
+    outline: none;
+    transform: translateY(-2px);
+}
+
+/* Button styles */
+button {
+    background-color: #6b8e23; /* Olive green for elegance */
+    color: #fff;
+    border: none;
+    padding: 12px 0;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #556b2f;
+    transform: translateY(-2px);
 }
 
 .button-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     gap: 10px;
 }
 
-button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+button[type="submit"] {
+    background: #27ae60;
 }
 
-button:hover {
-    background-color: #0056b3;
+button[type="submit"]:hover {
+    background: #219150;
 }
 
-.card {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 10px 0;
-    background-color: #ffffff;
+/* Table styles */
+table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: background-color 0.3s;
+}
+
+th,
+td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 16px;
+}
+
+th {
+    background-color: #6b8e23; /* Olive green */
+    color: #fff;
+}
+
+/* Card layout styles */
+.card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
 }
 
 .card:hover {
-    background-color: #f1f1f1;
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.card h2, .card p {
-    margin: 0;
+.card h2 {
+    font-size: 22px;
     margin-bottom: 10px;
 }
 
-.detail-container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
+.card p {
+    font-size: 16px;
 }
 
-.detail-container h2, .detail-container p {
-    text-align: left;
-}
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
 
+    h1 {
+        font-size: 28px;
+    }
 
-.card {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 10px 0;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: background-color 0.3s;
-    position: relative; /* Position relative to place delete button */
-}
-
-.card:hover {
-    background-color: #f1f1f1;
-}
-
-.card .delete-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    color: #ff0000;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.card .delete-btn:hover {
-    color: #cc0000;
+    button {
+        font-size: 14px;
+    }
 }

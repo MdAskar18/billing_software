@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A S T Billing Website</title>
     <link rel="icon" type="image/x-icon" href="as logo.png">
+    <!-- Elegant fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background: #f4f4f9; /* Light grey background for a clean look */
-            color: #333; /* Dark grey text color for readability */
+            font-family: 'Merriweather', serif;
+            background: linear-gradient(135deg, #f5f5f5, #eaeaea); /* Soft grey gradient */
+            color: #333; /* Dark gray for text */
             margin: 0;
             padding: 20px;
             display: flex;
@@ -21,10 +24,12 @@
 
         h1 {
             margin-bottom: 40px;
-            font-size: 48px;
-            color: #007BFF; /* Bright blue for a professional and modern look */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
+            font-size: 52px;
+            font-weight: 700;
+            color: #333; /* Dark grey text for elegance */
             text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .button-container {
@@ -37,32 +42,38 @@
         }
 
         button {
-            background: #007BFF; /* Bright blue background for buttons */
-            color: #fff; /* White text for contrast */
-            border-radius: 15px;
+            background-color: #fff; /* Classic white button */
+            color: #333; /* Dark text for contrast */
+            border: 2px solid #ccc; /* Subtle border */
+            border-radius: 10px;
             padding: 20px;
-            border: none;
-            font-size: 22px;
+            font-size: 20px;
+            font-family: 'Merriweather', serif;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: background-color 0.3s, transform 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
-            width: 100%;
-            text-align: center;
-            text-transform: uppercase;
+            text-transform: capitalize;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Light shadow for refinement */
         }
 
         button:hover {
-            transform: scale(1.08);
-            background: #0056b3; /* Darker blue on hover */
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+            background-color: #f0f0f0; /* Subtle color change on hover */
+            transform: scale(1.05); /* Slightly larger hover effect */
         }
 
         .icon {
             margin-right: 12px;
             font-size: 24px;
+        }
+
+        /* Footer style for a more complete look */
+        footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #777;
+            text-align: center;
         }
     </style>
 </head>
@@ -75,8 +86,12 @@
         <button onclick="openAddCustomerPage()"><i class="fas fa-plus-square icon"></i>Add Customer</button>
         <button onclick="openCustomerPage()"><i class="fas fa-users icon"></i>Customer Details</button>
         <button onclick="openAddSellerPage()"><i class="fas fa-plus-square icon"></i>Add Seller</button>
-		<button onclick="openSellerPage()"><i class="fas fa-handshake icon"></i>Seller Details</button>
+        <button onclick="openSellerPage()"><i class="fas fa-handshake icon"></i>Seller Details</button>
     </div>
+
+    <footer>
+        <p>&copy; 2024 AST Billing. All rights reserved.</p>
+    </footer>
 
     <script>
         function openBillingPage() {
@@ -86,7 +101,7 @@
         function openAddStockPage() {
             window.location.href = 'Add Stock.html';
         }
-         
+
         function openStockPage() {
             window.location.href = 'stock-list.html';
         }
