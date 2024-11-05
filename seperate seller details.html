@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Detail</title>
+	<link rel="icon" type="image/x-icon" href="as logo.png">
     <style>
         body {
             font-family: 'Georgia', serif;
@@ -63,7 +64,7 @@
         <h1>Seller Details</h1>
         <div id="sellerDetail"></div>
         <div class="buttons-container">
-            <button onclick="viewProducts()">View Products</button>
+            <button onclick="viewProducts()">Bills</button>
             <button onclick="viewTransactionHistory()">Transaction History</button>
         </div>
     </div>
@@ -90,7 +91,7 @@
         }
 
         function viewProducts() {
-            window.location.href = `seller_products.html?id=${sellerId}`;
+            window.location.href = `seller_bills.html?id=${sellerId}`;
         }
 
         function viewTransactionHistory() {

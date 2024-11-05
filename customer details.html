@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Details Display</title>
+	<link rel="icon" type="image/x-icon" href="as logo.png">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -118,66 +119,9 @@
         <input type="text" id="searchBar" class="search-bar" placeholder="Search for shops by name or address">
     </div>
 
-    <!-- Form to Add Customer -->
-    <div class="add-customer-form">
-        <h2>Add Customer</h2>
-        <input type="text" id="customer-name" placeholder="Enter Customer Name" required>
-        <input type="text" id="shop-name" placeholder="Enter Shop Name" required>
-        <input type="text" id="shop-address" placeholder="Enter Shop Address" required>
-        <button onclick="saveCustomer()">Save Customer</button>
-    </div>
-
     <div id="customerCard" class="cards-container"></div>
 
     <script>
-        // Function to save customer details
-        function saveCustomer() {
-            const customerName = document.getElementById('customer-name').value.trim();
-            const shopName = document.getElementById('shop-name').value.trim();
-            const shopAddress = document.getElementById('shop-address').value.trim();
-
-            if (!customerName || !shopName || !shopAddress) {
-                alert('Please fill all fields');
-                return;
-            }
-
-            // Create new customer object
-            const newCustomer = {
-                id: Date.now(),
-                name: customerName,
-                shopName: shopName,
-                shopAddress: shopAddress,
-                bills: []
-            };
-
-            // Retrieve existing customers from localStorage
-            let customers = JSON.parse(localStorage.getItem('customers')) || [];
-
-            // Check if customer already exists (optional)
-            const existingCustomer = customers.find(cust =>
-                cust.name.toLowerCase() === customerName.toLowerCase() &&
-                cust.shopName.toLowerCase() === shopName.toLowerCase()
-            );
-
-            if (existingCustomer) {
-                alert('Customer already exists!');
-                return;
-            }
-
-            // Add new customer to the list
-            customers.push(newCustomer);
-            localStorage.setItem('customers', JSON.stringify(customers));
-
-            // Notify user and reset the form
-            alert('Customer added successfully!');
-            document.getElementById('customer-name').value = '';
-            document.getElementById('shop-name').value = '';
-            document.getElementById('shop-address').value = '';
-
-            // Re-render customer list
-            renderCustomers();
-        }
-
         // Function to render customers
         function renderCustomers(filter = '') {
             const customerCardContainer = document.getElementById('customerCard');

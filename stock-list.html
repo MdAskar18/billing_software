@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock List</title>
+	<link rel="icon" type="image/x-icon" href="as logo.png">
     <style>
         /* Reset default styles */
         * {
@@ -177,7 +178,7 @@
             renderTable();
 
             // Function to update stock quantity
-            window.updateStockQuantity = function(productName, quantity) {
+            window.updateStockQuantity = function(productName, quantity , price) {
                 let stockItem = stockList.find(item => item.productName === productName);
                 if (stockItem) {
                     stockItem.quantity -= quantity;
